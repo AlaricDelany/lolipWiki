@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="..\GlobalAssemblyInfo.xml" />
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\LolipWikiWebApplication.BusinessLogic.Model\LolipWikiWebApplication.BusinessLogic.Model.csproj" />
+        <ProjectReference Include="..\LolipWikiWebApplication.BusinessLogic.TwitchClient\LolipWikiWebApplication.BusinessLogic.TwitchClient.csproj" />
+        <ProjectReference Include="..\LolipWikiWebApplication.DataAccess\LolipWikiWebApplication.DataAccess.csproj" />
+    </ItemGroup>
+
+</Project>

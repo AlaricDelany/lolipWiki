@@ -1,0 +1,57 @@
+﻿@page "{userId?}"
+@model LolipWikiWebApplication.Pages.User.UserDetailModel
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<form id="pageUserDetail" asp-page="Detail" asp-route-userId="@Model.UserToUpdate.Id">
+    <div class="row mb-3">
+        <label asp-for="UserToUpdate.DisplayName" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input asp-for="UserToUpdate.DisplayName" class="form-control" disabled="disabled"/>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label asp-for="UserToUpdate.Email" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input asp-for="UserToUpdate.Email" class="form-control" disabled="disabled"/>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label asp-for="IsAdmin" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input class="form-check-input" asp-for="IsAdmin">
+
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label asp-for="IsUserManager" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input class="form-check-input" asp-for="IsUserManager">
+
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label asp-for="IsArticleManager" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input class="form-check-input" asp-for="IsArticleManager">
+
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label asp-for="IsArticleReviewer" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input class="form-check-input" asp-for="IsArticleReviewer">
+
+        </div>
+    </div>
+    <div class="btn-group" role="group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a class="btn btn-primary active" href="@(Url.Page("List"))">Cancel</a>
+    </div>
+</form>

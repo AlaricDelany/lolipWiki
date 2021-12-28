@@ -1,0 +1,139 @@
+﻿@page
+@using LolipWikiWebApplication.BusinessLogic.Model.UserManagement
+@using LolipWikiWebApplication.PageModels
+@model LolipWikiWebApplication.Pages.User.UserListModel
+@{
+    ViewData["Title"] = "Users";
+}
+<div id="pageUserList" class="container">
+    <div class="row">
+        <div class="btn-group" role="group">
+            @await Html.PartialAsync("User/Import", new UserImportModel())
+        </div>
+    </div>
+    <div id="dataGridUser"></div>
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function() {
+            var $modal = $('#modalImportUser');
+            $modal.on('click',
+                '#modalImportUserSaveBtn',
+                function(e) {
+                    $modal.modal("hide");
+                    $modal.on("hidden.bs.modal",
+                        function() {
+                            document.location.reload();
+                        });
+                });
+
+
+            $("#dataGridUser").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "@(nameof(IUser.Id))",
+                    loadUrl: '@(Url.Action("Get", "Users"))'
+                }),
+                columns: [
+                    {
+                        dataField: "@(nameof(IUser.Id))",
+                        visible: false,
+                        allowSearch: false
+                    },
+                    {
+                        dataField: "@(nameof(IUser.DisplayName))",
+                        sortOrder: "asc"
+                    }, {
+                        dataField: "@(nameof(IUser.Email))",
+                        visible: false
+                    },
+                    {
+                        dataField: "@(nameof(IUser.SubscriptionState))",
+                        visible: false
+                    },
+                    {
+                        dataField: "@(nameof(IUser.IsAdmin))"
+                    },
+                    {
+                        dataField: "@(nameof(IUser.IsUserManager))"
+                    },
+                    {
+                        dataField: "@(nameof(IUser.IsArticleManager))"
+                    },
+                    {
+                        dataField: "@(nameof(IUser.IsArticleReviewer))"
+                    },
+                    {
+                        dataField: "@(nameof(IUser.LockedSince))",
+                        dataType: "datetime"
+                    },
+                    {
+                        dataField: "@(nameof(IUser.LockedBy))",
+                        customizeText: function(cellInfo) {
+                            if (cellInfo.value == null || cellInfo.value == undefined)
+                                return '';
+
+                            return cellInfo.value.DisplayName;
+                        }
+
+                    },
+                    {
+                        dataField: "@(nameof(IUser.ProfilePicturePath))",
+                        allowSearch: false,
+                        visible: false,
+                        cellTemplate(container, options) {
+                            var img = $('<img />',
+                                {
+                                    src: options.data.ProfilePicturePath,
+                                    alt: options.data.ProfilePicturePath,
+                                    height: 30
+                                });
+                            img.appendTo(container);
+                        }
+                    },
+                    {
+                        type: "buttons",
+                        cellTemplate(container, options) {
+                            var userId = options.data.Id;
+                            var linkEdit = $('<a></a>');
+                            linkEdit.attr('href',
+                                '@(Url.Page("Detail", new
+                                 {
+                                 }))/' +
+                                userId);
+                            linkEdit.attr('title', 'Edit');
+                            linkEdit.addClass('grid-icon');
+                            linkEdit.html('<i class="fas fa-edit"></i>');
+                            linkEdit.appendTo(container);
+
+                            var updateUserNameUrl = '@Url.Page("List", "UpdateName")&userId=' + userId;
+                            $(container).append('<a class="grid-icon" title="Update User Name" href="' + updateUserNameUrl + '"><i class="fas fa-sync-alt"></i></a>');
+
+                            var toggleLockUserUrl = '@Url.Page("List", "ToggleLock")&userId=' + userId;
+                            $(container).append('<a class="grid-icon" title="Locks/Unlocks a User" href="' + toggleLockUserUrl + '"><i class="fas fa-lock"></i></a>');
+                        }
+
+                    }
+                ],
+                allowColumnReordering: true,
+                columnAutoWidth: true,
+                columnChooser: { enabled: true },
+                filterRow: { visible: true },
+                searchPanel: { visible: true },
+                groupPanel: {
+                    visible: true,
+                },
+                onRowPrepared: function(e) {
+                    if (e.rowType != 'data')
+                        return;
+                    if (e.data.LockedSince == null)
+                        return;
+
+                    $(e.rowElement).addClass('alert alert-warning');
+                },
+            });
+        });
+    </script>
+}

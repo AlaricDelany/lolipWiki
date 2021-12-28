@@ -1,0 +1,53 @@
+﻿@using Microsoft.AspNetCore.Authentication
+@using LolipWikiWebApplication.BusinessLogic.Providers
+@using LolipWikiWebApplication.BusinessLogic.Logic
+@inject IProvideCurrentVersion _provideCurrentVersion;
+@inject IUserManagementLogic _userManagementLogic;
+
+@{
+    var accessToken = await Context.GetTokenAsync("access_token");
+    var user = await _userManagementLogic.AddOrUpdateUserAsync(User.ToTwitchUser(), accessToken);
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>lolipWiki - @ViewData["Title"] - @(_provideCurrentVersion.Version)</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="~/lib/devextreme/css/dx.light.min.css">
+    @await RenderSectionAsync("Styles", false)
+    <link rel="stylesheet" href="~/css/site.css"/>
+</head>
+<body class="dx-viewport">
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container">
+
+            <partial name="MainMenu" model="user"/>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+</div>
+
+<footer class="border-top footer text-muted">
+    <div class="container">
+        &copy; 2021 - lolipWiki @(_provideCurrentVersion.Version)
+    </div>
+</footer>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="~/lib/devextreme/js/dx.all.min.js"></script>
+<script type="text/javascript" src="~/lib/devextreme-aspnet-data/dx.aspnet.data.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+
+@await RenderSectionAsync("Scripts", false)
+</body>
+</html>

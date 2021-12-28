@@ -1,0 +1,87 @@
+﻿@page "{articleId?}/{articleVersionId?}"
+@model LolipWikiWebApplication.Pages.Article.ArticleDetailModel
+@{
+    ViewData["Title"] = "Edit Article";
+}
+<form id="pageArticleDetail" asp-page="Detail" asp-route-articleId="@Model.Version.ArticleId" asp-route-articleVersionId="@Model.Version.Id">
+    <div class="row mb-3">
+        <label asp-for="Title" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input asp-for="Title" class="form-control" readonly="readonly"/>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label asp-for="Version.Revision" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input asp-for="Version.Revision" class="form-control" disabled="disabled"/>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-2 col-form-label">Changed By</label>
+        <div class="col-sm-10">
+            <input asp-for="Version.ChangedBy.DisplayName" class="form-control" disabled="disabled"/>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label asp-for="Version.ChangedAt" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input asp-for="Version.ChangedAt" class="form-control" disabled="disabled"/>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label asp-for="TitleImage" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input asp-for="TitleImage" class="form-control" readonly="readonly"/>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <img id="TitleImagePreview" class="col-sm-2" src="@Model.TitleImage" alt="Image Path seems broken, maybe check it">
+    </div>
+
+    <div id="editor" style="min-height: 550px;">
+        <!-- Tips: Editor.md can auto append a `<textarea>` tag -->
+        <textarea style="display: none;" asp-for="ArticleContent"></textarea>
+    </div>
+
+    <div class="btn-group" role="group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a class="btn btn-primary active" href="@(Url.Page("List"))">Cancel</a>
+    </div>
+</form>
+
+@section Styles
+{
+    <link rel="stylesheet" href="~/lib/simplemde/simplemde.min.css"/>
+}
+
+@section Scripts
+{
+    <script type="text/javascript" src="~/lib/simplemde/simplemde.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            var simplemde = new SimpleMDE(
+                {
+                    element: document.getElementById("ArticleContent")
+                });
+
+            window.setInterval(function() {
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("OnPost", "Article", new
+                              {
+                                  articleId = Model.Version.ArticleId,
+                                  articleVersionId = Model.Version.Id
+                              })',
+                        data: {
+                            content: simplemde.value()
+                        },
+                        headers: {
+                            'RequestVerificationToken': '@Model.AntiForgery.GetAndStoreTokens(HttpContext).RequestToken'
+                        }
+                    });
+                },
+                300000);
+        });
+
+    </script>
+}

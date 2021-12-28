@@ -1,0 +1,19 @@
+﻿@page
+@using LolipWikiWebApplication.BusinessLogic.Exceptions
+@model ErrorModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+@if (Model.Exception is EntityNotFoundException<dynamic> or RoleNotFoundException)
+{
+    @await Html.PartialAsync("Errors/404", Model.Exception)
+}
+else if (Model.Exception is UnauthorizedAccessException or UserIsLockedException)
+{
+    @await Html.PartialAsync("Errors/401", Model.Exception)
+}
+else
+{
+    @await Html.PartialAsync("Errors/500", Model.Exception)
+}

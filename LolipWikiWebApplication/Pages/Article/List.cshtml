@@ -1,0 +1,43 @@
+﻿@page
+@using LolipWikiWebApplication.BusinessLogic.BusinessModels
+@model LolipWikiWebApplication.Pages.Article.ArticleListModel
+@{
+    ViewData["Title"] = "Articles";
+}
+<div id="pageArticleList" class="container">
+    <div class="btn-group">
+        <a asp-page="Add" class="btn btn-primary active">Add Article</a>
+    </div>
+    <div id="articleList"></div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(() => {
+            var listWidget = $('#articleList').dxList({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "@(nameof(ArticleVersionBM.Title))",
+                    loadUrl: '@Url.Action("Get", "Article")'
+                }),
+                height: '80%',
+                searchEnabled: true,
+                searchExpr: 'Title',
+                itemTemplate(data) {
+                    return '<img src="' + data.TitleImage + '" height="50"/>' + data.Title;
+                },
+
+                onItemClick(e) {
+                    window.location = '@(Url.Page("Detail", new
+                                       {
+                                       }))/' +
+                        e.itemData.ArticleId +
+                        '/' +
+                        e.itemData.Id;
+                }
+
+            }).dxList('instance');
+        });
+
+    </script>
+}

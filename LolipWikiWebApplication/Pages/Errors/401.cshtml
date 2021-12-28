@@ -1,0 +1,28 @@
+﻿@model Exception
+@{
+    ViewData["Title"] = "Error - Forbidden";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <img class="img-fluid" src="~/images/Kitty2.png"/>
+
+        </div>
+        <div class="col">
+            <div class="row">
+                <div class="alert alert-danger" role="alert">
+                    <h3 style="font-weight: bold;">
+                        <span class="badge bg-secondary">lolipNo</span> looks like a special someone was naughty and needs some lolipCat punishing, while we call the Police, Police, Police, Police
+                    </h3>
+                    <h6>If some CodeMonkey asks for details, just throw this nerd shet at them:</h6>
+                    <textarea class="form-control" disabled="disabled" rows="15">
+                        @Model
+                    </textarea>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>

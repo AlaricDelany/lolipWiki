@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Project>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Authors>VirCotto,</Authors>
+        <Company>Xyren</Company>
+        <Product>lolipWiki</Product>
+        <PackageProjectUrl></PackageProjectUrl>
+        <RepositoryUrl>https://github.com/AlaricDelany/lolipWiki</RepositoryUrl>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <WarningsAsErrors>$(WarningsAsErrors);NU1605;CS8618</WarningsAsErrors>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <WarningsAsErrors>$(WarningsAsErrors);NU1605;CS8618</WarningsAsErrors>
+    </PropertyGroup>
+</Project>
