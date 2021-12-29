@@ -5,8 +5,6 @@
     /// </summary>
     public interface IRequestor
     {
-        public static IRequestor Default { get; } = new DefaultRequestor();
-
         long   Id                 { get; }
         string Email              { get; }
         string ProfilePicturePath { get; }
