@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LolipWikiWebApplication.DataAccess.EntityModels;
 using Microsoft.EntityFrameworkCore;
@@ -18,5 +19,6 @@ namespace LolipWikiWebApplication.DataAccess
 
         int                   SaveChanges();
         IDbContextTransaction BeginTransaction();
+        void                  EnsureIsUpToDate(IDictionary<string, string> roles);
     }
 }

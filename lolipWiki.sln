@@ -22,7 +22,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LolipWikiWebApplication.Bus
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{85BE030C-B394-4049-810A-A53C3CB13C1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.LolipWikiWebApplication.BusinessLogic.TwitchClient", "Test.LolipWikiWebApplication.BusinessLogic.TwitchClient\Test.LolipWikiWebApplication.BusinessLogic.TwitchClient.csproj", "{7FDD3AB1-6288-498A-A0C6-729F734CF2D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.LolipWikiWebApplication.BusinessLogic.TwitchClient", "Test.LolipWikiWebApplication.BusinessLogic.TwitchClient\Test.LolipWikiWebApplication.BusinessLogic.TwitchClient.csproj", "{7FDD3AB1-6288-498A-A0C6-729F734CF2D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.LolipWikiWebApplication.DataAccess", "Test.LolipWikiWebApplication.DataAccess\Test.LolipWikiWebApplication.DataAccess.csproj", "{1F1906ED-BDFC-459F-9ADF-35A131DD43FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,12 +60,17 @@ Global
 		{7FDD3AB1-6288-498A-A0C6-729F734CF2D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FDD3AB1-6288-498A-A0C6-729F734CF2D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FDD3AB1-6288-498A-A0C6-729F734CF2D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F1906ED-BDFC-459F-9ADF-35A131DD43FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F1906ED-BDFC-459F-9ADF-35A131DD43FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F1906ED-BDFC-459F-9ADF-35A131DD43FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F1906ED-BDFC-459F-9ADF-35A131DD43FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7FDD3AB1-6288-498A-A0C6-729F734CF2D7} = {85BE030C-B394-4049-810A-A53C3CB13C1D}
+		{1F1906ED-BDFC-459F-9ADF-35A131DD43FA} = {85BE030C-B394-4049-810A-A53C3CB13C1D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A99BB0AC-2C42-4D73-B28F-D662A1280D31}
