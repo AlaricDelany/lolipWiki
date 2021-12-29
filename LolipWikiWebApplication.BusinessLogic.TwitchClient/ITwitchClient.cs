@@ -7,8 +7,10 @@ namespace LolipWikiWebApplication.BusinessLogic.TwitchClient
 {
     public interface ITwitchClient
     {
-        Task<IEnumerable<TwitchSubscriptionResponseModel>> GetTwitchSubscriptionModelsAsync(string accessToken, long   userId);
+        Task<IRequestor>                                   GetUserAsync(string                     accessToken);
         Task<IRequestor>                                   GetUserAsync(string                     accessToken, long   userId);
         Task<IRequestor>                                   GetUserAsync(string                     accessToken, string userName);
+        Task<TwitchTokenRefreshResponseModel>              RefreshTokenAsync(string                accessToken, string refreshToken);
+        Task<IEnumerable<TwitchSubscriptionResponseModel>> GetTwitchSubscriptionModelsAsync(string accessToken, long   userId);
     }
 }

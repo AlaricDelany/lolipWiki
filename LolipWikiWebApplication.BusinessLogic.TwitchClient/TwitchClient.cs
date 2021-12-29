@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -26,102 +25,81 @@ namespace LolipWikiWebApplication.BusinessLogic.TwitchClient
             _twitchSettings         = twitchSettings;
         }
 
-        public async Task<IEnumerable<TwitchSubscriptionResponseModel>> GetTwitchSubscriptionModelsAsync(string accessToken, long userId)
+        private async Task<TResult> ExecuteWithClientAsync<TResult>(string accessToken, Func<HttpClient, Task<HttpResponseMessage>> httpOperation)
         {
             try
             {
-                using (var client = _httpClientFactory.CreateClient(nameof(GetTwitchSubscriptionModelsAsync)))
+                using (var client = _httpClientFactory.CreateClient())
                 {
                     client.DefaultRequestHeaders.Clear();
                     client.DefaultRequestHeaders.Add("Client-Id",     _twitchSettings.Value.ClientId);
                     client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
 
-                    var requestUri = $"https://api.twitch.tv/helix/subscriptions/user?user_id={userId}&broadcaster_id={_userManagementSettings.Value.BroadcasterUserId}";
-
-                    var responseMessage = await client.GetAsync(requestUri);
-
-                    if (responseMessage.StatusCode == HttpStatusCode.NotFound)
-                        return Array.Empty<TwitchSubscriptionResponseModel>();
+                    var responseMessage = await httpOperation(client);
 
                     responseMessage.EnsureSuccessStatusCode();
 
-                    var response = await responseMessage.Content.ReadFromJsonAsync<TwitchSubscriptionsRequestModel>();
+                    var response = await responseMessage.Content.ReadFromJsonAsync<TResult>();
 
                     if (response == null)
                         throw new TwitchApiException("Twitch API returned Null");
 
-                    return response.Data.OrderByDescending(x => x.Tier)
-                                   .ToArray();
+                    return response;
                 }
             }
             catch (HttpRequestException e)
             {
                 throw new TwitchApiException(e);
             }
+        }
+
+        private async Task<TResult> GetAsync<TResult>(string accessToken, string requestUri)
+        {
+            return await ExecuteWithClientAsync<TResult>(accessToken, async client => await client.GetAsync(requestUri));
+        }
+
+        private async Task<TResult> PostAsync<TResult>(string accessToken, string requestUri)
+        {
+            return await ExecuteWithClientAsync<TResult>(accessToken, async client => await client.PostAsync(requestUri, new StringContent("")));
+        }
+
+        public async Task<IEnumerable<TwitchSubscriptionResponseModel>> GetTwitchSubscriptionModelsAsync(string accessToken, long userId)
+        {
+            var response = await GetAsync<TwitchSubscriptionsRequestModel>(accessToken, $"https://api.twitch.tv/helix/subscriptions/user?user_id={userId}&broadcaster_id={_userManagementSettings.Value.BroadcasterUserId}");
+
+            return response.Data.OrderByDescending(x => x.Tier)
+                           .ToArray();
         }
 
         public async Task<IRequestor> GetUserAsync(string accessToken, long userId)
         {
-            try
-            {
-                using (var client = _httpClientFactory.CreateClient(nameof(GetUserAsync)))
-                {
-                    client.DefaultRequestHeaders.Clear();
-                    client.DefaultRequestHeaders.Add("Client-Id",     _twitchSettings.Value.ClientId);
-                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+            var response = await GetAsync<TwitchUsersRequestModel>(accessToken, $"https://api.twitch.tv/helix/users?id={userId}");
+            var result   = response.Users.Single();
 
-                    var requestUri = $"https://api.twitch.tv/helix/users?id={userId}";
+            return result;
+        }
 
-                    var responseMessage = await client.GetAsync(requestUri);
+        public async Task<IRequestor> GetUserAsync(string accessToken)
+        {
+            var response = await GetAsync<TwitchUsersRequestModel>(accessToken, $"https://api.twitch.tv/helix/users");
+            var result   = response.Users.Single();
 
-                    responseMessage.EnsureSuccessStatusCode();
-
-                    var response = await responseMessage.Content.ReadFromJsonAsync<TwitchUsersRequestModel>();
-
-                    if (response == null)
-                        throw new TwitchApiException("Twitch API returned Null");
-
-                    var result = response.Users.Single();
-
-                    return result;
-                }
-            }
-            catch (HttpRequestException e)
-            {
-                throw new TwitchApiException(e);
-            }
+            return result;
         }
 
         public async Task<IRequestor> GetUserAsync(string accessToken, string userName)
         {
-            try
-            {
-                using (var client = _httpClientFactory.CreateClient(nameof(GetUserAsync)))
-                {
-                    client.DefaultRequestHeaders.Clear();
-                    client.DefaultRequestHeaders.Add("Client-Id",     _twitchSettings.Value.ClientId);
-                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+            var response = await GetAsync<TwitchUsersRequestModel>(accessToken, $"https://api.twitch.tv/helix/users?login={userName}");
+            var result   = response.Users.Single();
 
-                    var requestUri = $"https://api.twitch.tv/helix/users?login={userName}";
+            return result;
+        }
 
-                    var responseMessage = await client.GetAsync(requestUri);
+        public async Task<TwitchTokenRefreshResponseModel> RefreshTokenAsync(string accessToken, string refreshToken)
+        {
+            var response = await PostAsync<TwitchTokenRefreshResponseModel>(accessToken, $"https://id.twitch.tv/oauth2/token?grant_type=refresh_token&refresh_token={refreshToken}&client_id={_twitchSettings.Value.ClientId}&client_secret={_twitchSettings.Value.ClientSecret}");
 
-                    responseMessage.EnsureSuccessStatusCode();
-
-                    var response = await responseMessage.Content.ReadFromJsonAsync<TwitchUsersRequestModel>();
-
-                    if (response == null)
-                        throw new TwitchApiException("Twitch API returned Null");
-
-                    var result = response.Users.Single();
-
-                    return result;
-                }
-            }
-            catch (HttpRequestException e)
-            {
-                throw new TwitchApiException(e);
-            }
+            return response;
         }
     }
 }
