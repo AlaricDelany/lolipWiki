@@ -12,7 +12,8 @@ namespace Test.LolipWikiWebApplication.DataAccess
 {
     public class TestConfigurationRepository
     {
-        public IServiceProvider ServiceProvider { get; set; }
+        public IServiceProvider         ServiceProvider { get; set; }
+        public IConfigurationRepository Repository      { get; set; }
 
         [SetUp]
         public void Setup()
@@ -33,6 +34,8 @@ namespace Test.LolipWikiWebApplication.DataAccess
             }
 
             SetupServiceCollection();
+
+            Repository = ServiceProvider.GetService<IConfigurationRepository>();
         }
 
         [Test]
@@ -40,11 +43,9 @@ namespace Test.LolipWikiWebApplication.DataAccess
         {
             using (var context = ServiceProvider.GetRequiredService<ILolipWikiDbContext>())
             {
-                var repo = ServiceProvider.GetService<IConfigurationRepository>();
-
                 Assert.Throws<InvalidOperationException>(() =>
                                                          {
-                                                             var config = repo.Get(context);
+                                                             var config = Repository.Get(context);
                                                          }
                                                         );
             }
@@ -57,8 +58,6 @@ namespace Test.LolipWikiWebApplication.DataAccess
         {
             using (var context = ServiceProvider.GetRequiredService<ILolipWikiDbContext>())
             {
-                var repo = ServiceProvider.GetService<IConfigurationRepository>();
-
                 context.Configurations.AddRange(new[]
                                                 {
                                                     new ConfigurationEM(AccessControlType.Everyone, AccessControlType.Everyone),
@@ -70,7 +69,7 @@ namespace Test.LolipWikiWebApplication.DataAccess
 
                 Assert.Throws<InvalidOperationException>(() =>
                                                          {
-                                                             var config = repo.Get(context);
+                                                             var config = Repository.Get(context);
                                                          }
                                                         );
             }
@@ -83,13 +82,11 @@ namespace Test.LolipWikiWebApplication.DataAccess
         {
             using (var context = ServiceProvider.GetRequiredService<ILolipWikiDbContext>())
             {
-                var repo = ServiceProvider.GetService<IConfigurationRepository>();
-
                 context.Configurations.Add(new ConfigurationEM(AccessControlType.Everyone, AccessControlType.Everyone));
 
                 context.SaveChanges();
 
-                var config = repo.Get(context);
+                var config = Repository.Get(context);
 
                 Assert.That(config,                             Is.Not.Null);
                 Assert.That(config.ReadArticleControlTypeEnum,  Is.EqualTo(AccessControlType.Everyone));

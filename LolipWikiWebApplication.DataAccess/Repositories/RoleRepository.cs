@@ -28,8 +28,6 @@ namespace LolipWikiWebApplication.DataAccess.Repositories
                 if (userRole != null)
                     dbContext.UserRoles.Remove(userRole);
             }
-
-            dbContext.SaveChanges();
         }
 
         public RoleEM Get(ILolipWikiDbContext lolipWikiDbContext, string roleShortName)

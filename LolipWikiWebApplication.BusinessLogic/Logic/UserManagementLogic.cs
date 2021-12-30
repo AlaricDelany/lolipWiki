@@ -89,11 +89,15 @@ namespace LolipWikiWebApplication.BusinessLogic.Logic
                                                         );
 
             if (result.TwitchUserId == userManagementSettings.BroadcasterUserId || userManagementSettings.DefaultAdminUsers.Contains(result.TwitchUserId))
+            {
                 _roleRepository.Update(_dbContext,
                                        result,
                                        IUser.cRoleNameAdmin,
                                        true
                                       );
+
+                _dbContext.SaveChanges();
+            }
 
             return new UserBM(result);
         }
@@ -154,7 +158,6 @@ namespace LolipWikiWebApplication.BusinessLogic.Logic
         {
             _accessControlLogic.EnsureIsAllowed(_dbContext, requestor, IUser.cRoleNameUserManager);
 
-
             var userToUpdate = _userRepository.Get(_dbContext, userId);
 
             _roleRepository.Update(_dbContext,
@@ -177,6 +180,8 @@ namespace LolipWikiWebApplication.BusinessLogic.Logic
                                    IUser.cRoleNameArticleReviewer,
                                    isArticleReviewer
                                   );
+
+            _dbContext.SaveChanges();
 
             return new UserBM(userToUpdate);
         }
