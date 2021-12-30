@@ -71,12 +71,12 @@ namespace LolipWikiWebApplication.DataAccess.Repositories
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="requestorUserId"></param>
-        /// <param name="userId"></param>
+        /// <param name="twitchUserId"></param>
         /// <returns></returns>
-        public UserEM ToggleLock(ILolipWikiDbContext dbContext, long requestorUserId, long userId)
+        public UserEM ToggleLock(ILolipWikiDbContext dbContext, long requestorUserId, long twitchUserId)
         {
             var requestor = Get(dbContext, requestorUserId);
-            var user      = Get(dbContext, userId);
+            var user      = Get(dbContext, twitchUserId);
 
             if (user.LockedDateTime.HasValue)
                 user.LockedDateTime = null;
@@ -94,14 +94,14 @@ namespace LolipWikiWebApplication.DataAccess.Repositories
             return dbContext.Users;
         }
 
-        public UserEM Get(ILolipWikiDbContext context, long userId)
+        public UserEM Get(ILolipWikiDbContext context, long twitchUserId)
         {
-            return context.Users.Single(x => x.TwitchUserId == userId);
+            return context.Users.Single(x => x.TwitchUserId == twitchUserId);
         }
 
-        public UserEM GetOrDefault(ILolipWikiDbContext dbContext, long userId)
+        public UserEM GetOrDefault(ILolipWikiDbContext dbContext, long twitchUserId)
         {
-            return dbContext.Users.SingleOrDefault(x => x.TwitchUserId == userId);
+            return dbContext.Users.SingleOrDefault(x => x.TwitchUserId == twitchUserId);
         }
 
         private void UpdateUserNameInternal(

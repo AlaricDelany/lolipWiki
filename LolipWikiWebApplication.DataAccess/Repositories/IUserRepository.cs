@@ -6,8 +6,8 @@ namespace LolipWikiWebApplication.DataAccess.Repositories
     public interface IUserRepository
     {
         IQueryable<UserEM> GetAll(ILolipWikiDbContext       dbContext);
-        UserEM             Get(ILolipWikiDbContext          context,   long userId);
-        UserEM             GetOrDefault(ILolipWikiDbContext dbContext, long userId);
+        UserEM             Get(ILolipWikiDbContext          context,   long twitchUserId);
+        UserEM             GetOrDefault(ILolipWikiDbContext dbContext, long twitchUserId);
 
         UserEM AddOrUpdateUser(
             ILolipWikiDbContext dbContext,
@@ -27,6 +27,6 @@ namespace LolipWikiWebApplication.DataAccess.Repositories
             string              profilePictureImagePath
         );
 
-        UserEM ToggleLock(ILolipWikiDbContext dbContext, long requestorUserId, long userId);
+        UserEM ToggleLock(ILolipWikiDbContext dbContext, long requestorUserId, long twitchUserId);
     }
 }
