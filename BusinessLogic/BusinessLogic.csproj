@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="..\GlobalAssemblyInfo.xml" />
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\BusinessLogic.Model\BusinessLogic.Model.csproj" />
+        <ProjectReference Include="..\BusinessLogic.TwitchClient\BusinessLogic.TwitchClient.csproj" />
+        <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
+    </ItemGroup>
+
+</Project>

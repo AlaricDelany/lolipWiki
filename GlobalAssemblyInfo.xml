@@ -10,6 +10,8 @@
         <Product>lolipWiki</Product>
         <PackageProjectUrl></PackageProjectUrl>
         <RepositoryUrl>https://github.com/AlaricDelany/lolipWiki</RepositoryUrl>
+        <AssemblyName>LolipWikiWebApplication.$(MSBuildProjectName)</AssemblyName>
+        <RootNamespace>LolipWikiWebApplication.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

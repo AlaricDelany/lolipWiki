@@ -4,6 +4,6 @@
         <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\LolipWikiWebApplication.BusinessLogic.Model\LolipWikiWebApplication.BusinessLogic.Model.csproj" />
+        <ProjectReference Include="..\BusinessLogic.Model\BusinessLogic.Model.csproj" />
     </ItemGroup>
 </Project>
