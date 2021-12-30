@@ -25,11 +25,6 @@ namespace LolipWikiWebApplication.DataAccess.Repositories
             ;
         }
 
-        public IQueryable<ArticleEM> GetArticles(ILolipWikiDbContext dbContext)
-        {
-            return dbContext.Articles;
-        }
-
         public ArticleVersionEM GetVersion(ILolipWikiDbContext dbContext, long articleVersionId)
         {
             return dbContext.ArticleVersions.Single(x => x.Id == articleVersionId);
@@ -79,6 +74,7 @@ namespace LolipWikiWebApplication.DataAccess.Repositories
 
             version.ChangedAt   = DateTime.UtcNow;
             version.ChangedById = updater.Id;
+            version.ChangedBy   = updater;
             version.Content     = content;
             version.Revision++;
 

@@ -80,12 +80,19 @@ namespace Test.LolipWikiWebApplication.DataAccess
                 context.Users.Add(userEM);
                 context.SaveChanges();
 
-                Repository.Update(context, userEM, cRoleName, true);
+                Repository.Update(context,
+                                  userEM,
+                                  cRoleName,
+                                  true
+                                 );
                 context.SaveChanges();
 
-                Assert.That(userEM,                         Is.Not.Null);
-                Assert.That(userEM.UserRoles,               Is.Not.Empty);
-                Assert.That(userEM.UserRoles.Single().Role, Is.EqualTo(roleEM));
+                Assert.That(userEM,           Is.Not.Null);
+                Assert.That(userEM.UserRoles, Is.Not.Empty);
+                Assert.That(userEM.UserRoles.Single()
+                                  .Role,
+                            Is.EqualTo(roleEM)
+                           );
             }
         }
 
@@ -108,19 +115,30 @@ namespace Test.LolipWikiWebApplication.DataAccess
                 context.Users.Add(userEM);
                 context.SaveChanges();
 
-                Repository.Update(context, userEM, cRoleName, true);
+                Repository.Update(context,
+                                  userEM,
+                                  cRoleName,
+                                  true
+                                 );
                 context.SaveChanges();
 
-                Assert.That(userEM,                         Is.Not.Null);
-                Assert.That(userEM.UserRoles,               Is.Not.Empty);
-                Assert.That(userEM.UserRoles.Single().Role, Is.EqualTo(roleEM));
+                Assert.That(userEM,           Is.Not.Null);
+                Assert.That(userEM.UserRoles, Is.Not.Empty);
+                Assert.That(userEM.UserRoles.Single()
+                                  .Role,
+                            Is.EqualTo(roleEM)
+                           );
 
 
-                Repository.Update(context, userEM, cRoleName, false);
+                Repository.Update(context,
+                                  userEM,
+                                  cRoleName,
+                                  false
+                                 );
                 context.SaveChanges();
 
-                Assert.That(userEM,                         Is.Not.Null);
-                Assert.That(userEM.UserRoles,               Is.Empty);
+                Assert.That(userEM,           Is.Not.Null);
+                Assert.That(userEM.UserRoles, Is.Empty);
             }
         }
     }
