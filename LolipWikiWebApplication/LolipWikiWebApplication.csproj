@@ -4,6 +4,8 @@
         <Nullable>disable</Nullable>
         <PreserveCompilationContext>true</PreserveCompilationContext>
         <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
+        <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+        <RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="6.0.1" />
