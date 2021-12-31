@@ -54,6 +54,7 @@ namespace Test.LolipWikiWebApplication.BusinessLogic.TwitchClient.Helpers
                 driver.Navigate()
                       .GoToUrl(requestUri);
 
+                // Wait for User to do Login in the Browser
                 var waitResult = new WebDriverWait(driver, TimeSpan.FromMinutes(2)).Until(drv => drv.Url.StartsWith("https://localhost"));
 
                 Assert.IsTrue(waitResult);
