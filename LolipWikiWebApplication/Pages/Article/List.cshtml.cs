@@ -1,6 +1,7 @@
 using System.Linq;
 using LolipWikiWebApplication.BusinessLogic.BusinessModels;
 using LolipWikiWebApplication.BusinessLogic.Logic;
+using LolipWikiWebApplication.DataAccess;
 using LolipWikiWebApplication.PageModels;
 
 namespace LolipWikiWebApplication.Pages.Article
@@ -9,7 +10,16 @@ namespace LolipWikiWebApplication.Pages.Article
     {
         private readonly IArticleLogic _articleLogic;
 
-        public ArticleListModel(IUserManagementLogic userManagementLogic, IArticleLogic articleLogic, IAccessControlLogic accessControlLogic) : base(userManagementLogic, accessControlLogic, false)
+        public ArticleListModel(
+            ILolipWikiDbContext  dbContext,
+            IUserManagementLogic userManagementLogic,
+            IArticleLogic        articleLogic,
+            IAccessControlLogic  accessControlLogic
+        ) : base(dbContext,
+                 userManagementLogic,
+                 accessControlLogic,
+                 false
+                )
         {
             _articleLogic = articleLogic;
         }
@@ -18,7 +28,7 @@ namespace LolipWikiWebApplication.Pages.Article
 
         public void OnGet()
         {
-            ArticleVersions = _articleLogic.GetActiveVersions(Requestor)
+            ArticleVersions = _articleLogic.GetActiveVersions(DbContext, Requestor)
                                            .ToArray();
         }
     }

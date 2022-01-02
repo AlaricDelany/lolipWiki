@@ -1,12 +1,10 @@
-﻿@using Microsoft.AspNetCore.Authentication
-@using LolipWikiWebApplication.BusinessLogic.Providers
-@using LolipWikiWebApplication.BusinessLogic.Logic
+﻿@using LolipWikiWebApplication.BusinessLogic.Providers
+@using LolipWikiWebApplication.Providers
 @inject IProvideCurrentVersion _provideCurrentVersion;
-@inject IUserManagementLogic _userManagementLogic;
+@inject IProvideCurrentUser _provideCurrentUser;
 
 @{
-    var accessToken = await Context.GetTokenAsync("access_token");
-    var user = await _userManagementLogic.AddOrUpdateUserAsync(User.ToTwitchUser(), accessToken);
+    var user = _provideCurrentUser.GetOrDefault(Context, User);
 }
 
 <!DOCTYPE html>

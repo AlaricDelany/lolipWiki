@@ -14,18 +14,16 @@ namespace LolipWikiWebApplication.BusinessLogic.Logic
     {
         private readonly IAccessControlLogic _accessControlLogic;
         private readonly IArticleRepository  _articleRepository;
-        private readonly ILolipWikiDbContext _dbContext;
 
-        public ArticleLogic(ILolipWikiDbContext dbContext, IAccessControlLogic accessControlLogic, IArticleRepository articleRepository)
+        public ArticleLogic(IAccessControlLogic accessControlLogic, IArticleRepository articleRepository)
         {
-            _dbContext          = dbContext;
             _accessControlLogic = accessControlLogic;
             _articleRepository  = articleRepository;
         }
 
-        public IEnumerable<ArticleVersionBM> GetActiveVersions(IRequestor requestor)
+        public IEnumerable<ArticleVersionBM> GetActiveVersions(ILolipWikiDbContext dbContext, IRequestor requestor)
         {
-            var articleVersions = _articleRepository.GetActiveVersions(_dbContext)
+            var articleVersions = _articleRepository.GetActiveVersions(dbContext)
                                                     .OrderBy(x => x.Title)
                                                     .ToArray();
 
@@ -33,14 +31,15 @@ namespace LolipWikiWebApplication.BusinessLogic.Logic
         }
 
         public IEnumerable<ArticleVersionBM> GetActiveVersions(
-            IRequestor requestor,
-            int        skip,
-            int        take,
-            string     filter
+            ILolipWikiDbContext dbContext,
+            IRequestor          requestor,
+            int                 skip,
+            int                 take,
+            string              filter
         )
         {
             var safeFilter = filter; //Remove/Escape Characters you do not want here
-            var articleVersions = _articleRepository.GetActiveVersions(_dbContext)
+            var articleVersions = _articleRepository.GetActiveVersions(dbContext)
                                                     .Where(x => x.Title.Contains(safeFilter));
 
             return articleVersions.OrderBy(x => x.Title)
@@ -50,35 +49,45 @@ namespace LolipWikiWebApplication.BusinessLogic.Logic
                                   .Select(x => new ArticleVersionBM(x));
         }
 
-        public ArticleVersionBM Get(IRequestor requestor, long articleVersionId)
+        public ArticleVersionBM Get(ILolipWikiDbContext dbContext, IRequestor requestor, long articleVersionId)
         {
-            var articleVersion = _articleRepository.GetVersion(_dbContext, articleVersionId);
+            var articleVersion = _articleRepository.GetVersion(dbContext, articleVersionId);
 
             return new ArticleVersionBM(articleVersion);
         }
 
-        public ArticleVersionBM Add(IRequestor requestor, string title, string imagePath)
+        public ArticleVersionBM Add(
+            ILolipWikiDbContext dbContext,
+            IRequestor          requestor,
+            string              title,
+            string              imagePath
+        )
         {
-            var articleVersion = _articleRepository.Add(_dbContext,
+            var articleVersion = _articleRepository.Add(dbContext,
                                                         requestor.Id,
                                                         title,
                                                         imagePath
                                                        );
 
-            _dbContext.SaveChanges();
+            dbContext.SaveChanges();
 
             return new ArticleVersionBM(articleVersion);
         }
 
-        public ArticleVersionBM Update(IRequestor requestor, long articleVersionId, string content)
+        public ArticleVersionBM Update(
+            ILolipWikiDbContext dbContext,
+            IRequestor          requestor,
+            long                articleVersionId,
+            string              content
+        )
         {
-            var articleVersion = _articleRepository.Update(_dbContext,
+            var articleVersion = _articleRepository.Update(dbContext,
                                                            requestor.Id,
                                                            articleVersionId,
                                                            content
                                                           );
 
-            _dbContext.SaveChanges();
+            dbContext.SaveChanges();
 
             return new ArticleVersionBM(articleVersion);
         }

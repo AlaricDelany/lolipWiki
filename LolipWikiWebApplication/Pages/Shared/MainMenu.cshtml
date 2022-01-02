@@ -24,17 +24,11 @@
                     <a class="dropdown-item text-dark" asp-area="" asp-page="/Article/List">Articles</a>
                 </li>
 
-                @if (false && (Model.IsArticleReviewer || Model.IsArticleManager))
-                {
-                    <li>
-                        <a class="dropdown-item text-dark">Versions</a>
-                    </li>
-                }
 
             </ul>
         </li>
 
-        @if (Model.IsUserManager)
+        @if (Model != null && Model.IsUserManager)
         {
             <li class="nav-item dropdown">
                 <a class="nav-link text-dark dropdown-toggle" href="#" id="navbarDropdownAdministration" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -56,7 +50,7 @@
                 </ul>
             </li>
         }
-        @if (Model.IsAdmin)
+        @if (Model != null && Model.IsAdmin)
         {
             <li class="nav-item dropdown">
                 <a class="nav-link text-dark dropdown-toggle" href="#" id="navbarDropdownDebug" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -70,7 +64,7 @@
 
     </ul>
     <div>
-        <img src="@Model.ProfilePicturePath" alt="@Model.ProfilePicturePath" height="35"/>
-        <span>@Model.DisplayName</span>
+        <img src="@Model?.ProfilePicturePath" alt="@Model?.ProfilePicturePath" height="35"/>
+        <span>@Model?.DisplayName</span>
     </div>
 </div>

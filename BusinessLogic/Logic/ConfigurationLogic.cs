@@ -7,43 +7,46 @@ namespace LolipWikiWebApplication.BusinessLogic.Logic
 {
     public class ConfigurationLogic : IConfigurationLogic
     {
-        private readonly ILolipWikiDbContext      _dbContext;
         private readonly IConfigurationRepository _configurationRepository;
         private readonly IAccessControlLogic      _accessControlLogic;
 
-        public ConfigurationLogic(ILolipWikiDbContext dbContext, IConfigurationRepository configurationRepository, IAccessControlLogic accessControlLogic)
+        public ConfigurationLogic(IConfigurationRepository configurationRepository, IAccessControlLogic accessControlLogic)
         {
-            _dbContext               = dbContext;
             _configurationRepository = configurationRepository;
             _accessControlLogic      = accessControlLogic;
         }
 
-        public AccessControlType GetReadControlType(IRequestor requestor)
+        public AccessControlType GetReadControlType(ILolipWikiDbContext dbContext, IRequestor requestor)
         {
-            _accessControlLogic.EnsureIsAllowed(_dbContext, requestor, IUser.cRoleNameAdmin);
+            _accessControlLogic.EnsureIsAllowed(dbContext, requestor, IUser.cRoleNameAdmin);
 
-            return _configurationRepository.Get(_dbContext)
+            return _configurationRepository.Get(dbContext)
                                            .ReadArticleControlTypeEnum;
         }
 
-        public AccessControlType GetWriteControlType(IRequestor requestor)
+        public AccessControlType GetWriteControlType(ILolipWikiDbContext dbContext, IRequestor requestor)
         {
-            _accessControlLogic.EnsureIsAllowed(_dbContext, requestor, IUser.cRoleNameAdmin);
+            _accessControlLogic.EnsureIsAllowed(dbContext, requestor, IUser.cRoleNameAdmin);
 
-            return _configurationRepository.Get(_dbContext)
+            return _configurationRepository.Get(dbContext)
                                            .WriteArticleControlTypeEnum;
         }
 
-        public void Update(IRequestor requestor, AccessControlType readControlType, AccessControlType writeControlType)
+        public void Update(
+            ILolipWikiDbContext dbContext,
+            IRequestor          requestor,
+            AccessControlType   readControlType,
+            AccessControlType   writeControlType
+        )
         {
-            _accessControlLogic.EnsureIsAllowed(_dbContext, requestor, IUser.cRoleNameAdmin);
+            _accessControlLogic.EnsureIsAllowed(dbContext, requestor, IUser.cRoleNameAdmin);
 
-            var config = _configurationRepository.Get(_dbContext);
+            var config = _configurationRepository.Get(dbContext);
 
             config.ReadArticleControlTypeEnum  = readControlType;
             config.WriteArticleControlTypeEnum = writeControlType;
 
-            _dbContext.SaveChanges();
+            dbContext.SaveChanges();
         }
     }
 }

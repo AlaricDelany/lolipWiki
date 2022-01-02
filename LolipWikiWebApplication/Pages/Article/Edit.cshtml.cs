@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using LolipWikiWebApplication.BusinessLogic.BusinessModels;
 using LolipWikiWebApplication.BusinessLogic.Logic;
+using LolipWikiWebApplication.DataAccess;
 using LolipWikiWebApplication.PageModels;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +13,16 @@ namespace LolipWikiWebApplication.Pages.Article
         private readonly IArticleLogic _articleLogic;
 
         public ArticleEditModel(
+            ILolipWikiDbContext  dbContext,
             IUserManagementLogic userManagementLogic,
             IAntiforgery         antiForgery,
             IArticleLogic        articleLogic,
             IAccessControlLogic  accessControlLogic
-        ) : base(userManagementLogic, accessControlLogic, true)
+        ) : base(dbContext,
+                 userManagementLogic,
+                 accessControlLogic,
+                 true
+                )
         {
             _articleLogic = articleLogic;
             AntiForgery   = antiForgery;
@@ -42,7 +48,7 @@ namespace LolipWikiWebApplication.Pages.Article
 
         public void OnGet(long articleId, long articleVersionId)
         {
-            var article = _articleLogic.Get(Requestor, articleVersionId);
+            var article = _articleLogic.Get(DbContext, Requestor, articleVersionId);
 
             Version        = article;
             Title          = article.Title;
@@ -52,7 +58,11 @@ namespace LolipWikiWebApplication.Pages.Article
 
         public IActionResult OnPost(long articleId, long articleVersionId)
         {
-            var article = _articleLogic.Update(Requestor, articleVersionId, ArticleContent);
+            var article = _articleLogic.Update(DbContext,
+                                               Requestor,
+                                               articleVersionId,
+                                               ArticleContent
+                                              );
 
             return RedirectToPage("List");
         }

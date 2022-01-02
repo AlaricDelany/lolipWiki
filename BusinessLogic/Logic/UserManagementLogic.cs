@@ -14,15 +14,14 @@ using Microsoft.Extensions.Options;
 
 namespace LolipWikiWebApplication.BusinessLogic.Logic
 {
-    public class UserManagementLogic : IUserManagementLogic, IDisposable
+    public class UserManagementLogic : IUserManagementLogic
     {
         private readonly IAccessControlLogic              _accessControlLogic;
-        private readonly ILolipWikiDbContext              _dbContext;
         private readonly IRoleRepository                  _roleRepository;
+        private readonly IUserRepository                  _userRepository;
         private readonly ITwitchClient                    _twitchClient;
         private readonly IOptions<TwitchSettings>         _twitchSettingsOptions;
         private readonly IOptions<UserManagementSettings> _userManagementSettingsOptions;
-        private readonly IUserRepository                  _userRepository;
 
         public UserManagementLogic(
             IOptions<TwitchSettings>         twitchSettingsOptions,
@@ -30,8 +29,7 @@ namespace LolipWikiWebApplication.BusinessLogic.Logic
             ITwitchClient                    twitchClient,
             IUserRepository                  userRepository,
             IRoleRepository                  roleRepository,
-            IAccessControlLogic              accessControlLogic,
-            ILolipWikiDbContext              dbContext
+            IAccessControlLogic              accessControlLogic
         )
         {
             _twitchSettingsOptions         = twitchSettingsOptions;
@@ -40,31 +38,25 @@ namespace LolipWikiWebApplication.BusinessLogic.Logic
             _userRepository                = userRepository;
             _roleRepository                = roleRepository;
             _accessControlLogic            = accessControlLogic;
-            _dbContext                     = dbContext;
         }
 
-        public void Dispose()
+        public IEnumerable<UserBM> GetAll(ILolipWikiDbContext dbContext, IRequestor requestor)
         {
-            _dbContext.Dispose();
-        }
+            _accessControlLogic.EnsureIsAllowed(dbContext, requestor, IUser.cRoleNameUserManager);
 
-        public IEnumerable<UserBM> GetAll(IRequestor requestor)
-        {
-            _accessControlLogic.EnsureIsAllowed(_dbContext, requestor, IUser.cRoleNameUserManager);
-
-            var users = _userRepository.GetAll(_dbContext)
+            var users = _userRepository.GetAll(dbContext)
                                        .ToArray();
 
             return users.Select(x => new UserBM(x));
         }
 
-        public IUser GetUser(IRequestor requestor, long id)
+        public IUser GetUser(ILolipWikiDbContext dbContext, IRequestor requestor, long id)
         {
             if (requestor.Id != id)
-                _accessControlLogic.EnsureIsAllowed(_dbContext, requestor, IUser.cRoleNameUserManager);
+                _accessControlLogic.EnsureIsAllowed(dbContext, requestor, IUser.cRoleNameUserManager);
 
             var twitchSettings = _twitchSettingsOptions.Value;
-            var user           = _userRepository.GetOrDefault(_dbContext, id);
+            var user           = _userRepository.GetOrDefault(dbContext, id);
 
             if (user == null)
                 throw new EntityNotFoundException<UserEM>(id);
@@ -74,12 +66,12 @@ namespace LolipWikiWebApplication.BusinessLogic.Logic
             return twitchUser;
         }
 
-        public async Task<IUser> AddOrUpdateUserAsync(IRequestor requestor, string accessToken)
+        public async Task<IUser> AddOrUpdateUserAsync(ILolipWikiDbContext dbContext, IRequestor requestor, string accessToken)
         {
             var userManagementSettings = _userManagementSettingsOptions.Value;
             var subscriptionState      = await GetSubscriptionState(accessToken, requestor.Id);
 
-            var result = _userRepository.AddOrUpdateUser(_dbContext,
+            var result = _userRepository.AddOrUpdateUser(dbContext,
                                                          requestor.Id,
                                                          requestor.UserName,
                                                          requestor.DisplayName,
@@ -90,27 +82,32 @@ namespace LolipWikiWebApplication.BusinessLogic.Logic
 
             if (result.TwitchUserId == userManagementSettings.BroadcasterUserId || userManagementSettings.DefaultAdminUsers.Contains(result.TwitchUserId))
             {
-                _roleRepository.Update(_dbContext,
+                _roleRepository.Update(dbContext,
                                        result,
                                        IUser.cRoleNameAdmin,
                                        true
                                       );
 
-                _dbContext.SaveChanges();
+                dbContext.SaveChanges();
             }
 
             return new UserBM(result);
         }
 
-        public async Task<IUser> UpdateUserNameAsync(IRequestor requestor, string accessToken, long userId)
+        public async Task<IUser> UpdateUserNameAsync(
+            ILolipWikiDbContext dbContext,
+            IRequestor          requestor,
+            string              accessToken,
+            long                userId
+        )
         {
-            _accessControlLogic.EnsureIsAllowed(_dbContext, requestor, IUser.cRoleNameUserManager);
+            _accessControlLogic.EnsureIsAllowed(dbContext, requestor, IUser.cRoleNameUserManager);
 
             var twitchUser = await _twitchClient.GetUserAsync(accessToken, userId);
-            var user       = _userRepository.Get(_dbContext, userId);
+            var user       = _userRepository.Get(dbContext, userId);
 
 
-            user = _userRepository.UpdateUserName(_dbContext,
+            user = _userRepository.UpdateUserName(dbContext,
                                                   user,
                                                   twitchUser.UserName,
                                                   twitchUser.DisplayName,
@@ -119,24 +116,29 @@ namespace LolipWikiWebApplication.BusinessLogic.Logic
             return new UserBM(user);
         }
 
-        public IUser ToggleLock(IRequestor requestor, long userId)
+        public IUser ToggleLock(ILolipWikiDbContext dbContext, IRequestor requestor, long userId)
         {
-            _accessControlLogic.EnsureIsAllowed(_dbContext, requestor, IUser.cRoleNameUserManager);
+            _accessControlLogic.EnsureIsAllowed(dbContext, requestor, IUser.cRoleNameUserManager);
 
-            var user = _userRepository.ToggleLock(_dbContext, requestor.Id, userId);
+            var user = _userRepository.ToggleLock(dbContext, requestor.Id, userId);
 
-            _dbContext.SaveChanges();
+            dbContext.SaveChanges();
 
             return new UserBM(user);
         }
 
-        public async Task<IUser> ImportAsync(IRequestor requestor, string accessToken, string userName)
+        public async Task<IUser> ImportAsync(
+            ILolipWikiDbContext dbContext,
+            IRequestor          requestor,
+            string              accessToken,
+            string              userName
+        )
         {
-            _accessControlLogic.EnsureIsAllowed(_dbContext, requestor, IUser.cRoleNameUserManager);
+            _accessControlLogic.EnsureIsAllowed(dbContext, requestor, IUser.cRoleNameUserManager);
 
             var twitchUser = await _twitchClient.GetUserAsync(accessToken, userName);
 
-            var user = _userRepository.AddOrUpdateUser(_dbContext,
+            var user = _userRepository.AddOrUpdateUser(dbContext,
                                                        twitchUser.Id,
                                                        twitchUser.UserName,
                                                        twitchUser.DisplayName,
@@ -148,40 +150,41 @@ namespace LolipWikiWebApplication.BusinessLogic.Logic
         }
 
         public IUser UpdateRoles(
-            IRequestor requestor,
-            long       userId,
-            bool       isAdmin,
-            bool       isUserManager,
-            bool       isArticleManager,
-            bool       isArticleReviewer
+            ILolipWikiDbContext dbContext,
+            IRequestor          requestor,
+            long                userId,
+            bool                isAdmin,
+            bool                isUserManager,
+            bool                isArticleManager,
+            bool                isArticleReviewer
         )
         {
-            _accessControlLogic.EnsureIsAllowed(_dbContext, requestor, IUser.cRoleNameUserManager);
+            _accessControlLogic.EnsureIsAllowed(dbContext, requestor, IUser.cRoleNameUserManager);
 
-            var userToUpdate = _userRepository.Get(_dbContext, userId);
+            var userToUpdate = _userRepository.Get(dbContext, userId);
 
-            _roleRepository.Update(_dbContext,
+            _roleRepository.Update(dbContext,
                                    userToUpdate,
                                    IUser.cRoleNameAdmin,
                                    isAdmin
                                   );
-            _roleRepository.Update(_dbContext,
+            _roleRepository.Update(dbContext,
                                    userToUpdate,
                                    IUser.cRoleNameUserManager,
                                    isUserManager
                                   );
-            _roleRepository.Update(_dbContext,
+            _roleRepository.Update(dbContext,
                                    userToUpdate,
                                    IUser.cRoleNameArticleManager,
                                    isArticleManager
                                   );
-            _roleRepository.Update(_dbContext,
+            _roleRepository.Update(dbContext,
                                    userToUpdate,
                                    IUser.cRoleNameArticleReviewer,
                                    isArticleReviewer
                                   );
 
-            _dbContext.SaveChanges();
+            dbContext.SaveChanges();
 
             return new UserBM(userToUpdate);
         }

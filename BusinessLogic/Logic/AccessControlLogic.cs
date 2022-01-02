@@ -35,9 +35,9 @@ namespace LolipWikiWebApplication.BusinessLogic.Logic
             throw new RoleNotFoundException(roleShortName, requestor.Id);
         }
 
-        public void EnsureReadIsAllowed(IUser user)
+        public void EnsureReadIsAllowed(ILolipWikiDbContext dbContext, IUser user)
         {
-            var config = _configurationRepository.Get();
+            var config = _configurationRepository.Get(dbContext);
             EnsureReadIsAllowedInternal(user, config);
         }
 
@@ -49,9 +49,9 @@ namespace LolipWikiWebApplication.BusinessLogic.Logic
             EnsureIsAllowedInternal(user, config.ReadArticleControlTypeEnum);
         }
 
-        public void EnsureWriteIsAllowed(IUser user)
+        public void EnsureWriteIsAllowed(ILolipWikiDbContext dbContext, IUser user)
         {
-            var config = _configurationRepository.Get();
+            var config = _configurationRepository.Get(dbContext);
 
             EnsureReadIsAllowedInternal(user, config);
             EnsureIsAllowedInternal(user, config.WriteArticleControlTypeEnum);

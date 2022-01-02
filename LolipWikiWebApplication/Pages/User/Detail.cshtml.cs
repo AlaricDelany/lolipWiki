@@ -1,5 +1,6 @@
 using LolipWikiWebApplication.BusinessLogic.Logic;
 using LolipWikiWebApplication.BusinessLogic.Model.UserManagement;
+using LolipWikiWebApplication.DataAccess;
 using LolipWikiWebApplication.PageModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,11 @@ namespace LolipWikiWebApplication.Pages.User
     {
         private readonly IUserManagementLogic _userManagementLogic;
 
-        public UserDetailModel(IUserManagementLogic userManagementLogic, IAccessControlLogic accessControlLogic) : base(userManagementLogic, accessControlLogic, true)
+        public UserDetailModel(ILolipWikiDbContext dbContext, IUserManagementLogic userManagementLogic, IAccessControlLogic accessControlLogic) : base(dbContext,
+                                                                                                                                                       userManagementLogic,
+                                                                                                                                                       accessControlLogic,
+                                                                                                                                                       true
+                                                                                                                                                      )
         {
             _userManagementLogic = userManagementLogic;
         }
@@ -32,7 +37,7 @@ namespace LolipWikiWebApplication.Pages.User
 
         public IActionResult OnGet(long userId)
         {
-            var user = _userManagementLogic.GetUser(Requestor, userId);
+            var user = _userManagementLogic.GetUser(DbContext, Requestor, userId);
 
             IsAdmin           = user.IsAdmin;
             IsUserManager     = user.IsUserManager;
@@ -53,7 +58,8 @@ namespace LolipWikiWebApplication.Pages.User
                                       }
                                      );
 
-            _userManagementLogic.UpdateRoles(Requestor,
+            _userManagementLogic.UpdateRoles(DbContext,
+                                             Requestor,
                                              userId,
                                              IsAdmin,
                                              IsUserManager,

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -25,7 +26,7 @@ namespace LolipWikiWebApplication.BusinessLogic.TwitchClient
             _twitchSettings         = twitchSettings;
         }
 
-        private async Task<TResult> ExecuteWithClientAsync<TResult>(string accessToken, Func<HttpClient, Task<HttpResponseMessage>> httpOperation)
+        private async Task<TResult?> ExecuteWithClientAsync<TResult>(string accessToken, Func<HttpClient, Task<HttpResponseMessage>> httpOperation, HttpStatusCode[] statusCodeWhiteList) where TResult : class
         {
             try
             {
@@ -37,7 +38,10 @@ namespace LolipWikiWebApplication.BusinessLogic.TwitchClient
 
                     var responseMessage = await httpOperation(client);
 
-                    responseMessage.EnsureSuccessStatusCode();
+                    if (!statusCodeWhiteList.Contains(responseMessage.StatusCode))
+                        responseMessage.EnsureSuccessStatusCode();
+                    else
+                        return null;
 
                     var response = await responseMessage.Content.ReadFromJsonAsync<TResult>();
 
@@ -53,19 +57,22 @@ namespace LolipWikiWebApplication.BusinessLogic.TwitchClient
             }
         }
 
-        private async Task<TResult> GetAsync<TResult>(string accessToken, string requestUri)
+        private async Task<TResult?> GetAsync<TResult>(string accessToken, string requestUri, params HttpStatusCode[] statusCodeWhiteList) where TResult : class
         {
-            return await ExecuteWithClientAsync<TResult>(accessToken, async client => await client.GetAsync(requestUri));
+            return await ExecuteWithClientAsync<TResult>(accessToken, async client => await client.GetAsync(requestUri), statusCodeWhiteList);
         }
 
-        private async Task<TResult> PostAsync<TResult>(string accessToken, string requestUri)
+        private async Task<TResult?> PostAsync<TResult>(string accessToken, string requestUri, params HttpStatusCode[] statusCodeWhiteList) where TResult : class
         {
-            return await ExecuteWithClientAsync<TResult>(accessToken, async client => await client.PostAsync(requestUri, new StringContent("")));
+            return await ExecuteWithClientAsync<TResult>(accessToken, async client => await client.PostAsync(requestUri, new StringContent("")), statusCodeWhiteList);
         }
 
         public async Task<IEnumerable<TwitchSubscriptionResponseModel>> GetTwitchSubscriptionModelsAsync(string accessToken, long userId)
         {
-            var response = await GetAsync<TwitchSubscriptionsRequestModel>(accessToken, $"https://api.twitch.tv/helix/subscriptions/user?user_id={userId}&broadcaster_id={_userManagementSettings.Value.BroadcasterUserId}");
+            var response = await GetAsync<TwitchSubscriptionsRequestModel>(accessToken, $"https://api.twitch.tv/helix/subscriptions/user?user_id={userId}&broadcaster_id={_userManagementSettings.Value.BroadcasterUserId}", HttpStatusCode.NotFound);
+
+            if (response == null)
+                return Array.Empty<TwitchSubscriptionResponseModel>();
 
             return response.Data.OrderByDescending(x => x.Tier)
                            .ToArray();
@@ -81,7 +88,7 @@ namespace LolipWikiWebApplication.BusinessLogic.TwitchClient
 
         public async Task<IRequestor> GetUserAsync(string accessToken)
         {
-            var response = await GetAsync<TwitchUsersRequestModel>(accessToken, $"https://api.twitch.tv/helix/users");
+            var response = await GetAsync<TwitchUsersRequestModel>(accessToken, "https://api.twitch.tv/helix/users");
             var result   = response.Users.Single();
 
             return result;

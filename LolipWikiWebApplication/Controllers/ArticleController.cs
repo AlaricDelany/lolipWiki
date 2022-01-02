@@ -4,6 +4,7 @@ using System.Net;
 using System.Text.Json;
 using LolipWikiWebApplication.BusinessLogic.BusinessModels;
 using LolipWikiWebApplication.BusinessLogic.Logic;
+using LolipWikiWebApplication.DataAccess;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LolipWikiWebApplication.Controllers
@@ -12,10 +13,12 @@ namespace LolipWikiWebApplication.Controllers
     [ApiController]
     public class ArticleController : ControllerBase
     {
-        private readonly IArticleLogic _articleLogic;
+        private readonly ILolipWikiDbContext _dbContext;
+        private readonly IArticleLogic       _articleLogic;
 
-        public ArticleController(IArticleLogic articleLogic)
+        public ArticleController(ILolipWikiDbContext dbContext, IArticleLogic articleLogic)
         {
+            _dbContext    = dbContext;
             _articleLogic = articleLogic;
         }
 
@@ -24,22 +27,21 @@ namespace LolipWikiWebApplication.Controllers
         {
             var requestor = User.ToTwitchUser();
 
-            if (!string.IsNullOrWhiteSpace(filter))
-            {
-                //Have to remove the Additional Braces cause stupid DevExpress added multiple of them so its not a Valid String[] anymore, only God knows why. even a string[][] would need curly braces and not the standard one, really weird
-                var substring    = filter.Substring(1, filter.Length - 2);
-                var searchString = JsonSerializer.Deserialize<string[]>(substring);
-                var result = _articleLogic.GetActiveVersions(requestor,
-                                                             skip,
-                                                             take,
-                                                             searchString.Last()
-                                                            )
-                                          .ToArray();
+            if (string.IsNullOrWhiteSpace(filter))
+                return _articleLogic.GetActiveVersions(_dbContext, requestor);
 
-                return result;
-            }
+            //Have to remove the Additional Braces cause stupid DevExpress added multiple of them so its not a Valid String[] anymore, only God knows why. even a string[][] would need curly braces and not the standard one, really weird
+            var substring    = filter.Substring(1, filter.Length - 2);
+            var searchString = JsonSerializer.Deserialize<string[]>(substring);
+            var result = _articleLogic.GetActiveVersions(_dbContext,
+                                                         requestor,
+                                                         skip,
+                                                         take,
+                                                         searchString.Last()
+                                                        )
+                                      .ToArray();
 
-            return _articleLogic.GetActiveVersions(requestor);
+            return result;
         }
 
         [HttpPost]

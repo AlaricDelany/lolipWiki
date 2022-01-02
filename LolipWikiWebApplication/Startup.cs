@@ -6,11 +6,13 @@ using LolipWikiWebApplication.BusinessLogic.Providers;
 using LolipWikiWebApplication.BusinessLogic.TwitchClient.Extensions;
 using LolipWikiWebApplication.DataAccess;
 using LolipWikiWebApplication.DataAccess.Extensions;
+using LolipWikiWebApplication.Providers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace LolipWikiWebApplication
 {
@@ -27,6 +29,7 @@ namespace LolipWikiWebApplication
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IProvideCurrentVersion, ProvideCurrentVersion>();
+            services.AddTransient<IProvideCurrentUser, ProvideCurrentUser>();
 
 #region Settings
 

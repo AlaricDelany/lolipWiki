@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using LolipWikiWebApplication.BusinessLogic.Logic;
+using LolipWikiWebApplication.DataAccess;
 using LolipWikiWebApplication.PageModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +10,16 @@ namespace LolipWikiWebApplication.Pages.Article
     {
         private readonly IArticleLogic _articleLogic;
 
-        public AddArticleModel(IUserManagementLogic userManagementLogic, IArticleLogic articleLogic, IAccessControlLogic accessControlLogic) : base(userManagementLogic, accessControlLogic, true)
+        public AddArticleModel(
+            ILolipWikiDbContext  dbContext,
+            IUserManagementLogic userManagementLogic,
+            IArticleLogic        articleLogic,
+            IAccessControlLogic  accessControlLogic
+        ) : base(dbContext,
+                 userManagementLogic,
+                 accessControlLogic,
+                 true
+                )
         {
             _articleLogic = articleLogic;
         }
@@ -33,7 +43,11 @@ namespace LolipWikiWebApplication.Pages.Article
             if (!ModelState.IsValid)
                 return Page();
 
-            var article = _articleLogic.Add(Requestor, Title, TitleImage);
+            var article = _articleLogic.Add(DbContext,
+                                            Requestor,
+                                            Title,
+                                            TitleImage
+                                           );
 
             return RedirectToPage("Detail",
                                   new

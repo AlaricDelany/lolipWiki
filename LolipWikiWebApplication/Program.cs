@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace LolipWikiWebApplication
 {
@@ -15,6 +16,12 @@ namespace LolipWikiWebApplication
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
+                       .ConfigureLogging(cfg =>
+                                         {
+                                             cfg.AddConsole();
+                                             cfg.AddDebug();
+                                         }
+                                        )
                        .ConfigureWebHostDefaults(webBuilder =>
                                                  {
                                                      webBuilder.UseStartup<Startup>();
