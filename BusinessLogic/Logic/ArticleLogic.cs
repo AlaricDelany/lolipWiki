@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LolipWikiWebApplication.BusinessLogic.BusinessModels;
+using LolipWikiWebApplication.BusinessLogic.Exceptions;
 using LolipWikiWebApplication.BusinessLogic.Model.UserManagement;
 using LolipWikiWebApplication.DataAccess;
+using LolipWikiWebApplication.DataAccess.EntityModels;
 using LolipWikiWebApplication.DataAccess.Repositories;
 
 namespace LolipWikiWebApplication.BusinessLogic.Logic
@@ -78,6 +81,21 @@ namespace LolipWikiWebApplication.BusinessLogic.Logic
             _dbContext.SaveChanges();
 
             return new ArticleVersionBM(articleVersion);
+        }
+
+        public ArticleVersionEM AddVersion(ILolipWikiDbContext dbContext, IRequestor requestor, long articleId)
+        {
+            var article = _articleRepository.Get(dbContext, articleId);
+            var versions = article.Versions.OrderByDescending(x => x.Revision)
+                                  .ToArray();
+            var latestVersion = versions.First();
+
+            if (!latestVersion.PublishedAt.HasValue)
+                throw new ExistingDraftException(articleId, latestVersion.Id, requestor.Id);
+
+            var newVersion = _articleRepository.AddVersion(dbContext, latestVersion, requestor.Id);
+
+            return newVersion;
         }
     }
 }

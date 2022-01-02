@@ -6,6 +6,7 @@
         Unauthorized,
         NotFound,
         ApiException,
-        UserIsLocked
+        UserIsLocked,
+        ExistingDraft
     }
 }

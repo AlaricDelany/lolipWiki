@@ -30,6 +30,11 @@ namespace LolipWikiWebApplication.DataAccess.Repositories
             return dbContext.ArticleVersions.Single(x => x.Id == articleVersionId);
         }
 
+        public ArticleEM Get(ILolipWikiDbContext dbContext, long articleId)
+        {
+            return dbContext.Articles.Single(x => x.Id == articleId);
+        }
+
         public ArticleVersionEM Add(
             ILolipWikiDbContext dbContext,
             long                creatorId,
@@ -66,19 +71,30 @@ namespace LolipWikiWebApplication.DataAccess.Repositories
             string              content
         )
         {
-            var updater = _userRepository.Get(dbContext, updaterId);
             var version = GetVersion(dbContext, articleVersionId);
 
             if (content == version.Content)
                 return version;
 
+            var updater = _userRepository.Get(dbContext, updaterId);
+
             version.ChangedAt   = DateTime.UtcNow;
             version.ChangedById = updater.Id;
             version.ChangedBy   = updater;
             version.Content     = content;
-            version.Revision++;
 
             return version;
+        }
+
+        public ArticleVersionEM AddVersion(ILolipWikiDbContext dbContext, ArticleVersionEM latestVersion, long creatorUserId)
+        {
+            var creatorUser    = _userRepository.Get(dbContext, creatorUserId);
+            var articleVersion = new ArticleVersionEM(latestVersion, creatorUser.Id);
+
+            articleVersion = dbContext.ArticleVersions.Add(articleVersion)
+                                      .Entity;
+
+            return articleVersion;
         }
     }
 }

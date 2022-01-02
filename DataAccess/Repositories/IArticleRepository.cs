@@ -5,6 +5,7 @@ namespace LolipWikiWebApplication.DataAccess.Repositories
 {
     public interface IArticleRepository
     {
+        ArticleEM                    Get(ILolipWikiDbContext               dbContext, long articleId);
         ArticleVersionEM             GetVersion(ILolipWikiDbContext        dbContext, long articleVersionId);
         IQueryable<ArticleVersionEM> GetActiveVersions(ILolipWikiDbContext dbContext);
 
@@ -21,5 +22,7 @@ namespace LolipWikiWebApplication.DataAccess.Repositories
             long                articleVersionId,
             string              content
         );
+
+        ArticleVersionEM AddVersion(ILolipWikiDbContext dbContext, ArticleVersionEM latestVersion, long creatorUserId);
     }
 }

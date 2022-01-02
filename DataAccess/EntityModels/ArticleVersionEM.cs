@@ -7,6 +7,17 @@ namespace LolipWikiWebApplication.DataAccess.EntityModels
     [Table("TAB_ARTICLE_VERSION")]
     public class ArticleVersionEM
     {
+        public ArticleVersionEM(ArticleVersionEM latestVersion, long createdById) : this(latestVersion.ArticleId,
+                                                                                         latestVersion.Title,
+                                                                                         latestVersion.Content,
+                                                                                         latestVersion.TitleImage,
+                                                                                         latestVersion.Revision++,
+                                                                                         DateTime.UtcNow,
+                                                                                         createdById
+                                                                                        )
+        {
+        }
+
         protected ArticleVersionEM(
             long     articleId,
             string   title,
@@ -86,7 +97,7 @@ namespace LolipWikiWebApplication.DataAccess.EntityModels
 #region Navigation Properties
 
         public virtual ArticleEM Article   { get; set; }
-        public virtual UserEM   ChangedBy { get; set; }
+        public virtual UserEM    ChangedBy { get; set; }
         public virtual UserEM    CreatedBy { get; set; }
 
 #endregion Navigation Properties

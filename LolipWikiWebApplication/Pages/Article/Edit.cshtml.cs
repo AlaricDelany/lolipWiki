@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LolipWikiWebApplication.Pages.Article
 {
-    public class ArticleDetailModel : BasePageModel
+    public class ArticleEditModel : BasePageModel
     {
         private readonly IArticleLogic _articleLogic;
 
-        public ArticleDetailModel(
+        public ArticleEditModel(
             IUserManagementLogic userManagementLogic,
             IAntiforgery         antiForgery,
             IArticleLogic        articleLogic,
