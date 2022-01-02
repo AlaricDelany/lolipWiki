@@ -9,9 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NUnit.Framework;
-using Test.LolipWikiWebApplication.BusinessLogic.TwitchClient.Helpers;
+using Test.BusinessLogic.TwitchClient.Helpers;
 
-namespace Test.LolipWikiWebApplication.BusinessLogic.TwitchClient
+namespace Test.BusinessLogic.TwitchClient
 {
     [Explicit("Needs user Interaction (TwitchLogin in Browser)")]
     public class TestTwitchClient

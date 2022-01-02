@@ -11,7 +11,7 @@ using NUnit.Framework;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
 
-namespace Test.LolipWikiWebApplication.BusinessLogic.TwitchClient.Helpers
+namespace Test.BusinessLogic.TwitchClient.Helpers
 {
     /// <summary>
     /// Logic for Reading and Saving TokenModels.
