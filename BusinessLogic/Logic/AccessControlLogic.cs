@@ -41,10 +41,10 @@ namespace LolipWikiWebApplication.BusinessLogic.Logic
             EnsureReadIsAllowedInternal(user, config);
         }
 
-        public void EnsureReadIsAllowedInternal(IUser user, ConfigurationEM config)
+        private void EnsureReadIsAllowedInternal(IUser user, ConfigurationEM config)
         {
             if (user.LockedSince.HasValue)
-                throw new UnauthorizedAccessException($"User:{user.Id} is locked.");
+                throw new UserIsLockedException(user.Id);
 
             EnsureIsAllowedInternal(user, config.ReadArticleControlTypeEnum);
         }
@@ -65,11 +65,11 @@ namespace LolipWikiWebApplication.BusinessLogic.Logic
                     return;
                 case AccessControlType.SubOnly:
                     if (user.SubscriptionState == SubscriptionStateType.None)
-                        throw new UnauthorizedAccessException($"User:{user.Id} is not subbed.");
+                        throw new UserSubMissingException(user.Id);
                     break;
                 case AccessControlType.RoleOnly:
                     if (!(user.IsAdmin || user.IsArticleManager || user.IsArticleReviewer || user.IsUserManager))
-                        throw new UnauthorizedAccessException($"User:{user.Id} has no Roles.");
+                        throw new UserRoleMissingException(user.Id);
 
                     break;
                 default:

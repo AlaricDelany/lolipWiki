@@ -7,6 +7,8 @@
         NotFound,
         ApiException,
         UserIsLocked,
-        ExistingDraft
+        ExistingDraft,
+        UserRoleMissing,
+        UserSubMissing
     }
 }

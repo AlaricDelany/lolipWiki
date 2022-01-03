@@ -4,14 +4,14 @@ using System.Diagnostics.CodeAnalysis;
 namespace LolipWikiWebApplication.BusinessLogic.Model.Exceptions
 {
     [SuppressMessage("Design", "RCS1194:Implement exception constructors.", Justification = "<Pending>")]
-    public class BusinessLayerException : Exception
+    public abstract class BusinessLayerException : Exception
     {
-        public BusinessLayerException(BusinessLayerErrorCode errorCode, string message) : base(message)
+        protected BusinessLayerException(BusinessLayerErrorCode errorCode, string message) : base(message)
         {
             ErrorCode = errorCode;
         }
 
-        public BusinessLayerException(BusinessLayerErrorCode errorCode, string message, Exception innerException) : base(innerException.Message, innerException)
+        protected BusinessLayerException(BusinessLayerErrorCode errorCode, string message, Exception innerException) : base(innerException.Message, innerException)
         {
             ErrorCode = errorCode;
         }

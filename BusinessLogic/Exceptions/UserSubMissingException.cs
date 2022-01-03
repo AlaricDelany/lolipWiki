@@ -5,15 +5,15 @@ using LolipWikiWebApplication.BusinessLogic.Model.Exceptions;
 namespace LolipWikiWebApplication.BusinessLogic.Exceptions
 {
     [SuppressMessage("Design", "RCS1194:Implement exception constructors.", Justification = "<Pending>")]
-    public class UserIsLockedException : BusinessLayerException
+    public class UserSubMissingException : BusinessLayerException
     {
-        public UserIsLockedException(long userId) : base(BusinessLayerErrorCode.UserIsLocked, GetMessage(userId))
+        public UserSubMissingException(long userId) : base(BusinessLayerErrorCode.UserSubMissing, GetMessage(userId))
         {
         }
 
         public static string GetMessage(long userId)
         {
-            return $"The User with the TwitchUserId:{userId} is locked and not allowed to perform this Action.";
+            return $"The User with the TwitchUserId:{userId} is not subbed.";
         }
     }
 }
