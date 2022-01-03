@@ -206,7 +206,47 @@ namespace Test.DataAccess
                 Assert.That(newVersion.ChangedAt,   Is.Not.Null);
                 Assert.That(newVersion.ChangedById, Is.EqualTo(userEM.Id));
                 Assert.That(newVersion.ChangedBy,   Is.EqualTo(userEM));
-                Assert.That(newVersion.Revision,    Is.EqualTo(1));
+                Assert.That(newVersion.Revision,    Is.EqualTo(0));
+            }
+        }
+
+        [Test]
+        public void Test_AddVersion_Works()
+        {
+            using (var context = ServiceProvider.GetRequiredService<ILolipWikiDbContext>())
+            {
+                var userEM = new UserEM(42,
+                                        "Name",
+                                        "Name",
+                                        "",
+                                        "",
+                                        0
+                                       );
+                context.Users.Add(userEM);
+                context.SaveChanges();
+
+                var version = Repository.Add(context,
+                                             userEM.TwitchUserId,
+                                             "Title",
+                                             ""
+                                            );
+                context.SaveChanges();
+
+
+                //Act
+                var newVersion = Repository.AddVersion(context, version, userEM.TwitchUserId);
+                context.SaveChanges();
+
+                Assert.That(newVersion,             Is.Not.Null);
+                Assert.That(newVersion.Article,     Is.Not.Null);
+                Assert.That(newVersion.Title,       Is.EqualTo(version.Title));
+                Assert.That(newVersion.Content,     Is.EqualTo(version.Content));
+                Assert.That(newVersion.CreatedBy,   Is.EqualTo(userEM));
+                Assert.That(newVersion.PublishedAt, Is.Null);
+                Assert.That(newVersion.ChangedAt,   Is.Null);
+                Assert.That(newVersion.ChangedById, Is.Null);
+                Assert.That(newVersion.ChangedBy,   Is.Null);
+                Assert.That(newVersion.Revision,    Is.EqualTo(version.Revision + 1));
             }
         }
     }

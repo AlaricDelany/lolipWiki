@@ -11,7 +11,7 @@ namespace LolipWikiWebApplication.DataAccess.EntityModels
                                                                                          latestVersion.Title,
                                                                                          latestVersion.Content,
                                                                                          latestVersion.TitleImage,
-                                                                                         latestVersion.Revision++,
+                                                                                         latestVersion.Revision+1,
                                                                                          DateTime.UtcNow,
                                                                                          createdById
                                                                                         )
