@@ -49,7 +49,7 @@ namespace LolipWikiWebApplication.Pages.Article
                                             TitleImage
                                            );
 
-            return RedirectToPage("Detail",
+            return RedirectToPage("Edit",
                                   new
                                   {
                                       articleId        = article.ArticleId,
