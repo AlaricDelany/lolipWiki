@@ -88,3 +88,7 @@ div#pageArticleList div.btn-group,
 div#pageUserList div.btn-group {
     margin-bottom: 20px;
 }
+
+div#pageError img.img-fluid {
+    height: 100%;
+}

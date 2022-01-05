@@ -5,15 +5,17 @@
     ViewData["Title"] = "Error";
 }
 
-@if (Model.Exception is EntityNotFoundException<dynamic> or RoleNotFoundException)
-{
-    @await Html.PartialAsync("Errors/404", Model.Exception)
-}
-else if (Model.Exception is UnauthorizedAccessException or UserIsLockedException or UserRoleMissingException or UserSubMissingException)
-{
-    @await Html.PartialAsync("Errors/401", Model.Exception)
-}
-else
-{
-    @await Html.PartialAsync("Errors/500", Model.Exception)
-}
+<div id="pageError" class="container">
+    @if (Model.Exception is EntityNotFoundException<dynamic> or RoleNotFoundException)
+    {
+        @await Html.PartialAsync("Errors/404", Model.Exception)
+    }
+    else if (Model.Exception is UnauthorizedAccessException or UserIsLockedException or UserRoleMissingException or UserSubMissingException)
+    {
+        @await Html.PartialAsync("Errors/401", Model.Exception)
+    }
+    else
+    {
+        @await Html.PartialAsync("Errors/500", Model.Exception)
+    }
+</div>
