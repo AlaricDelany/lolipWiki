@@ -9,7 +9,7 @@
 {
     @await Html.PartialAsync("Errors/404", Model.Exception)
 }
-else if (Model.Exception is UnauthorizedAccessException or UserIsLockedException)
+else if (Model.Exception is UnauthorizedAccessException or UserIsLockedException or UserRoleMissingException or UserSubMissingException)
 {
     @await Html.PartialAsync("Errors/401", Model.Exception)
 }
