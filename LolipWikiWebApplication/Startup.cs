@@ -79,8 +79,10 @@ namespace LolipWikiWebApplication
 
             app.UseEndpoints(endpoints =>
                              {
-                                 endpoints.MapRazorPages();
-                                 endpoints.MapControllers();
+                                 endpoints.MapRazorPages()
+                                          .RequireAuthorization();
+                                 endpoints.MapControllers()
+                                          .RequireAuthorization();
                              }
                             );
             InitializeDatabase(app);

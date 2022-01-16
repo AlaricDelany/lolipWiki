@@ -3,12 +3,10 @@ using System.Linq;
 using LolipWikiWebApplication.BusinessLogic.BusinessModels;
 using LolipWikiWebApplication.BusinessLogic.Logic;
 using LolipWikiWebApplication.DataAccess;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LolipWikiWebApplication.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase

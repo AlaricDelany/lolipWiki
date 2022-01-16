@@ -2,12 +2,10 @@ using LolipWikiWebApplication.BusinessLogic.Logic;
 using LolipWikiWebApplication.BusinessLogic.Model.UserManagement;
 using LolipWikiWebApplication.DataAccess;
 using LolipWikiWebApplication.PageModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LolipWikiWebApplication.Pages.User
 {
-    [Authorize]
     public class UserDetailModel : BasePageModel
     {
         private readonly IUserManagementLogic _userManagementLogic;
