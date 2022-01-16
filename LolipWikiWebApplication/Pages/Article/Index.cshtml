@@ -1,2 +1,5 @@
 ﻿@page
+@using LolipWikiWebApplication.PageModels
 @model LolipWikiWebApplication.Pages.Article.IndexModel
+
+<partial name="Shared/ArticleOverview" model="new ArticleOverviewModel(Model.TwitchUser)"/>

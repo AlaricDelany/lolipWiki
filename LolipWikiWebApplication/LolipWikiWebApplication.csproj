@@ -12,6 +12,7 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.1" />
         <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
+        <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.7.0" />
     </ItemGroup>
 
     <ItemGroup>

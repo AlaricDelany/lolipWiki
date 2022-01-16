@@ -20,11 +20,15 @@
                 Article
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownArticle">
+                @if (Model != null && Model.IsArticleManager)
+                {
+                    <li>
+                        <a class="dropdown-item text-dark" asp-area="" asp-page="/Article/List">Article List</a>
+                    </li>
+                }
                 <li>
-                    <a class="dropdown-item text-dark" asp-area="" asp-page="/Article/List">Articles</a>
+                    <a class="dropdown-item text-dark" asp-area="" asp-page="/Article/Index">Articles</a>
                 </li>
-
-
             </ul>
         </li>
 

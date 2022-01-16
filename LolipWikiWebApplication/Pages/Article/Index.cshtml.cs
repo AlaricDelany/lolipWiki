@@ -1,13 +1,23 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using LolipWikiWebApplication.BusinessLogic.Logic;
+using LolipWikiWebApplication.DataAccess;
+using LolipWikiWebApplication.PageModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LolipWikiWebApplication.Pages.Article
 {
-    public class IndexModel : PageModel
+    [Authorize]
+    public class IndexModel : BasePageModel
     {
-        public IActionResult OnGet()
+        public IndexModel(ILolipWikiDbContext dbContext, IUserManagementLogic userManagementLogic, IAccessControlLogic accessControlLogic) : base(dbContext,
+                                                                                                                                                  userManagementLogic,
+                                                                                                                                                  accessControlLogic,
+                                                                                                                                                  false
+                                                                                                                                                 )
         {
-            return RedirectToPage("List");
+        }
+
+        public void OnGet()
+        {
         }
     }
 }

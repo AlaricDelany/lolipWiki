@@ -1,0 +1,45 @@
+﻿@using LolipWikiWebApplication.BusinessLogic.BusinessModels
+@model LolipWikiWebApplication.PageModels.ArticleOverviewModel
+
+<div id="pageArticleTileView" class="container">
+    @if (Model != null && Model.User.IsArticleManager)
+    {
+        <div class="btn-group">
+            <a asp-page="Add" class="btn btn-primary active">Add Article</a>
+        </div>
+    }
+    <div id="tileview"></div>
+</div>
+
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded',
+        function load() {
+            if (!window.jQuery) {
+                return setTimeout(load, 50);
+            }
+            $(() => {
+                $('#tileview').dxTileView({
+                    baseItemHeight: 210,
+                    baseItemWidth: 150,
+                    direction: 'vertical',
+                    dataSource: DevExpress.data.AspNet.createStore({
+                        key: '@(nameof(ArticleVersionBM.Title))',
+                        loadUrl: '@Url.Action("Get", "Article")'
+                    }),
+                    itemTemplate(itemData, itemIndex, itemElement) {
+                        itemElement.append(`<img src="${itemData.TitleImage}" class="tileView-img" alt="${itemData.TitleImage}" /><h5 class="tileView-title">${itemData.Title}</h5>`);
+                    },
+                    onItemClick: function(e) {
+                        if (e == undefined || e.itemData == undefined) {
+                            return;
+                        }
+                        window.location = `@Url.Page("Article/Detail", new
+                                           {
+                                           })/${e.itemData.ArticleId}/${e.itemData.Id}`;
+                    },
+                });
+            });
+        },
+        false);
+
+</script>

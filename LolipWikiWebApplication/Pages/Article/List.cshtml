@@ -5,9 +5,13 @@
     ViewData["Title"] = "Articles";
 }
 <div id="pageArticleList" class="container">
-    <div class="btn-group">
-        <a asp-page="Add" class="btn btn-primary active">Add Article</a>
-    </div>
+    @if (Model.TwitchUser.IsArticleManager)
+    {
+        <div class="btn-group">
+            <a asp-page="Add" class="btn btn-primary active">Add Article</a>
+        </div>
+    }
+
     <div id="articleList"></div>
 </div>
 

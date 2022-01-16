@@ -15,13 +15,10 @@ namespace LolipWikiWebApplication.DataAccess.Repositories
 
         public IQueryable<ArticleVersionEM> GetActiveVersions(ILolipWikiDbContext dbContext)
         {
-            return dbContext.Articles.Where(x => x.Versions.Any())
-                            .Select(article => article.Versions
-                                                      //.Where(version => version.PublishedAt.HasValue)
-                                                      .OrderByDescending(y => y.PublishedAt)
-                                                      .ThenBy(y => y.Title)
-                                                      .First()
-                                   );
+            return dbContext.Articles.SelectMany(x => x.Versions)
+                            //.Where(version => version.PublishedAt.HasValue)
+                            .OrderByDescending(y => y.PublishedAt)
+                            .ThenBy(y => y.Title);
             ;
         }
 

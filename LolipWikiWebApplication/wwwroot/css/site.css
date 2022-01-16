@@ -92,3 +92,15 @@ div#pageUserList div.btn-group {
 div#pageError img.img-fluid {
     height: 100%;
 }
+
+
+
+div#pageArticleTileView img.tileView-img {
+    height: 100%;
+    /* width: 100%; */
+}
+
+
+div#pageArticleTileView .tileView-title {
+    text-align: center;
+}

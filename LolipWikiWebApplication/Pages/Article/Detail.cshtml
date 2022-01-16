@@ -1,0 +1,23 @@
+﻿@page "{articleId?}/{articleVersionId?}"
+@using Westwind.AspNetCore.Markdown
+@model LolipWikiWebApplication.Pages.Article.ArticleDetailModel
+@{
+    ViewData["Title"] = "Article Detail";
+}
+<div id="pageArticleEdit" class="container">
+    <div class="row mb-3">
+        <h1>@Model.Title</h1>
+    </div>
+    <div class="row mb-3">
+        <img id="TitleImagePreview" class="col-sm-2" src="@Model.TitleImage" alt="Image Path seems broken, maybe check it">
+    </div>
+
+    <div id="editor" style="min-height: 550px;">
+        @Markdown.ParseHtmlString(Model.ArticleContent)
+    </div>
+
+    <div class="btn-group" role="group">
+        <a class="btn btn-primary active" href="@(Url.Page("List"))">Back</a>
+    </div>
+</div>
+}

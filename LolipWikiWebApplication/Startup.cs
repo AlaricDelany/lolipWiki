@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Westwind.AspNetCore.Markdown;
 
 namespace LolipWikiWebApplication
 {
@@ -44,7 +44,9 @@ namespace LolipWikiWebApplication
             services.AddTwitchLogin();
             services.AddLolipWikiDb(Configuration);
 
-            services.AddRazorPages();
+            services.AddMarkdown();
+            services.AddRazorPages()
+                    .AddApplicationPart(typeof(MarkdownPageProcessorMiddleware).Assembly);
             services.AddControllers()
                     .AddJsonOptions(options =>
                                     {
@@ -67,6 +69,7 @@ namespace LolipWikiWebApplication
             app.UseStatusCodePagesWithReExecute("/Error");
 
             app.UseHttpsRedirection();
+            app.UseMarkdown();
             app.UseStaticFiles();
 
             app.UseRouting();
