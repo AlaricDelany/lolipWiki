@@ -93,7 +93,7 @@ div#pageError img.img-fluid {
 
 div#pageArticleTileView img.tileView-img {
     height: 100%;
-    /* width: 100%; */
+    max-width: 100%;
 }
 
 div#pageArticleTileView .tileView-title {
