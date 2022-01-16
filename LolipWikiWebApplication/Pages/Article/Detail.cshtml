@@ -4,13 +4,14 @@
 @{
     ViewData["Title"] = "Article Detail";
 }
-<div id="pageArticleEdit" class="container">
-    <div class="row mb-3">
-        <h1>@Model.Version.Title</h1>
+<div id="pageArticleDetail" class="container">
+    <div class="row">
+        <div class="col-sm-5">
+            <h1>@Model.Version.Title</h1>
+        </div>
+        <img class="col-sm-2" src="@Model.Version.TitleImage" alt="Image Path seems broken, maybe check it">
     </div>
-    <div class="row mb-3">
-        <img id="TitleImagePreview" class="col-sm-2" src="@Model.Version.TitleImage" alt="Image Path seems broken, maybe check it">
-    </div>
+
 
     <div id="editor" style="min-height: 550px;">
         @Markdown.ParseHtmlString(Model.Version.Content)
