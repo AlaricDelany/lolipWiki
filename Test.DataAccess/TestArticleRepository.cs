@@ -39,6 +39,7 @@ namespace Test.DataAccess
         }
 
         [Test]
+        [Ignore("No Publishing implemented right now")]
         public void Test_GetActiveVersions_Works()
         {
             using (var context = ServiceProvider.GetRequiredService<ILolipWikiDbContext>())
@@ -87,6 +88,7 @@ namespace Test.DataAccess
         }
 
         [Test]
+        [Ignore("No Publishing implemented right now")]
         public void Test_GetActiveVersions_ReturnsTheLatestVersion()
         {
             using (var context = ServiceProvider.GetRequiredService<ILolipWikiDbContext>())
@@ -120,7 +122,6 @@ namespace Test.DataAccess
                                                             userEM
                                                            );
 
-                articleVersion01.PublishedAt = DateTime.MinValue;
                 articleVersion02.PublishedAt = DateTime.MaxValue;
 
                 articleEM.Versions.Add(articleVersion01);
