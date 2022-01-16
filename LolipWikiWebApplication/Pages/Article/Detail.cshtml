@@ -13,7 +13,7 @@
     </div>
 
 
-    <div id="editor" style="min-height: 550px;">
+    <div id="editor" class="markdown-body" style="min-height: 550px;">
         @Markdown.ParseHtmlString(Model.Version.Content)
     </div>
 
@@ -21,3 +21,8 @@
         <a class="btn btn-primary active" href="@(Url.Page("/Article/Index"))">Back</a>
     </div>
 </div>
+
+@section Styles
+{
+    <link rel="stylesheet" href="~/lib/github-markdown-css/github-markdown-light.min.css">
+}

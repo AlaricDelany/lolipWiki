@@ -44,7 +44,11 @@ namespace LolipWikiWebApplication
             services.AddTwitchLogin();
             services.AddLolipWikiDb(Configuration);
 
-            services.AddMarkdown();
+            services.AddMarkdown(options =>
+                                 {
+                                     options.HtmlTagBlackList = "script|iframe|object|embed|form";
+                                 }
+                                );
             services.AddRazorPages()
                     .AddApplicationPart(typeof(MarkdownPageProcessorMiddleware).Assembly);
             services.AddControllers()
