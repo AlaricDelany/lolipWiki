@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Edit Article";
 }
-<form id="pageArticleDetail" asp-page="Detail" asp-route-articleId="@Model.Version.ArticleId" asp-route-articleVersionId="@Model.Version.Id">
+<form id="pageArticleDetail" asp-page="Edit" asp-route-articleId="@Model.Version.ArticleId" asp-route-articleVersionId="@Model.Version.Id">
     <div class="row mb-3">
         <label asp-for="Title" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-10">
